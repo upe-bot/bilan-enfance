@@ -194,7 +194,7 @@ tr:hover td{background:var(--bg3);}
       <div class="login-logo-sub">Dashboard Super Admin</div>
     </div>
     <input class="login-input" type="password" id="pwdInput" placeholder="Mot de passe administrateur" onkeydown="if(event.key==='Enter')tryLogin()">
-    <button class="login-btn" onclick="tryLogin()">Accéder →</button>
+    <button class="login-btn" id="loginBtn">Accéder →</button>
     <div class="login-err" id="loginErr">Mot de passe incorrect.</div>
   </div>
 </div>
@@ -454,16 +454,22 @@ async function tryLogin() {
   const pwd = document.getElementById('pwdInput').value;
   if (!pwd) return;
 
-  const btn = document.querySelector('.login-btn');
+  const btn = document.getElementById('loginBtn');
   btn.textContent = 'Vérification…';
   btn.disabled = true;
+
+  // Timeout de 8 secondes sur Render
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
 
   try {
     const res = await fetch(`${API}/auth`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pwd })
+      body: JSON.stringify({ password: pwd }),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     const data = await res.json();
 
     if (data.ok) {
@@ -476,10 +482,18 @@ async function tryLogin() {
       btn.disabled = false;
     }
   } catch(e) {
-    document.getElementById('loginErr').textContent = 'Serveur en démarrage, réessayez dans 30 secondes…';
-    document.getElementById('loginErr').classList.add('show');
-    btn.textContent = 'Accéder →';
-    btn.disabled = false;
+    clearTimeout(timeout);
+    // Render en veille ou inaccessible — fallback session locale
+    const saved = loadSession();
+    if (saved && saved === pwd) {
+      // Session encore valide — on laisse entrer
+      openDashboard(pwd);
+    } else {
+      document.getElementById('loginErr').textContent = 'Serveur en démarrage (30-60 sec) ou mot de passe incorrect. Réessayez.';
+      document.getElementById('loginErr').classList.add('show');
+      btn.textContent = 'Accéder →';
+      btn.disabled = false;
+    }
   }
 }
 window.tryLogin = tryLogin;
@@ -1048,6 +1062,7 @@ document.getElementById('modalConfirm').onclick = function() {
 
 // ── INIT ──
 document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+document.getElementById('loginBtn').addEventListener('click', () => tryLogin());
 document.getElementById('loginErr').textContent = 'Mot de passe incorrect.';
 // Mettre à jour le compteur quand on change d'onglet email
 document.querySelector('[onclick="showTab('emails',this)"]') &&
