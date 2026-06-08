@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Bilan Enfance 2026 – Défi Enfance</title>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Poppins:wght@300;400;500;600&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --magenta:#fb0089; --orange-vif:#ef6135; --orange:#ff8533;
+    --white:#ffffff; --off-white:#fff8f5; --dark:#1a0a00; --gray:#6b6b6b;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Poppins',sans-serif; background:var(--off-white); min-height:100vh; overflow-x:hidden; }
+
+  .hero {
+    background:linear-gradient(135deg,var(--magenta) 0%,var(--orange-vif) 60%,var(--orange) 100%);
+    padding:48px 24px 40px; text-align:center; position:relative; overflow:hidden;
+  }
+  .hero::before { content:''; position:absolute; top:-80px; right:-80px; width:300px; height:300px; background:rgba(255,255,255,0.06); border-radius:50%; }
+  .hero::after { content:''; position:absolute; bottom:-60px; left:10%; width:200px; height:200px; background:rgba(255,255,255,0.04); border-radius:50%; }
+  .hero-inner { position:relative; z-index:1; max-width:560px; margin:0 auto; }
+  .hero-icon { font-size:52px; margin-bottom:12px; }
+  .hero-title { font-family:'Montserrat',sans-serif; color:white; font-size:clamp(28px,6vw,42px); font-weight:900; line-height:1.05; margin-bottom:12px; }
+  .hero-title em { font-style:normal; background:rgba(255,255,255,0.2); padding:2px 10px; border-radius:6px; }
+  .hero-sub { color:rgba(255,255,255,0.9); font-size:15px; line-height:1.6; margin-bottom:20px; }
+
+  /* SOLIKEND BADGE */
+  .solikend-badge {
+    background:rgba(255,255,255,0.15);
+    border:2px solid rgba(255,255,255,0.4);
+    border-radius:16px;
+    padding:16px 20px;
+    margin:0 auto 8px;
+    max-width:480px;
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  .solikend-badge-title {
+    font-family:'Montserrat',sans-serif;
+    font-size:13px; font-weight:900; color:white;
+    letter-spacing:0.5px; margin-bottom:6px;
+  }
+  .solikend-badge-title span { font-size:20px; margin-right:6px; }
+  .solikend-badge-text { font-size:12px; color:rgba(255,255,255,0.92); line-height:1.5; }
+  .solikend-badge-text strong { font-weight:700; }
+
+  .anon-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-top:16px; }
+
+  /* CARDS */
+  .cards-wrap { max-width:560px; margin:0 auto; padding:32px 16px 60px; }
+  .cards-title { font-family:'Montserrat',sans-serif; font-size:16px; font-weight:800; color:var(--dark); text-align:center; margin-bottom:20px; }
+
+  .profile-card {
+    display:block;
+    background:white;
+    border:2px solid rgba(251,0,137,0.1);
+    border-radius:20px;
+    padding:22px 20px;
+    margin-bottom:14px;
+    text-decoration:none;
+    transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    cursor:pointer;
+    -webkit-touch-callout:none;
+  }
+  .profile-card:active { transform:scale(0.98); }
+  @media(hover:hover) { .profile-card:hover { border-color:var(--magenta); transform:translateY(-2px); box-shadow:0 8px 28px rgba(251,0,137,0.15); } }
+
+  .card-inner { display:flex; align-items:center; gap:16px; }
+  .card-icon { font-size:36px; flex-shrink:0; width:52px; height:52px; background:var(--off-white); border-radius:14px; display:flex; align-items:center; justify-content:center; }
+  .card-body { flex:1; }
+  .card-title { font-family:'Montserrat',sans-serif; font-size:16px; font-weight:800; color:var(--dark); margin-bottom:4px; }
+  .card-desc { font-size:12px; color:var(--gray); line-height:1.4; }
+  .card-arrow { font-size:20px; color:var(--magenta); font-weight:700; flex-shrink:0; }
+
+  .deadline-notice {
+    background:linear-gradient(135deg,rgba(251,0,137,0.08),rgba(239,97,53,0.08));
+    border:1px solid rgba(251,0,137,0.15);
+    border-radius:14px;
+    padding:14px 18px;
+    text-align:center;
+    margin-top:8px;
+  }
+  .deadline-notice p { font-size:13px; color:var(--dark); font-weight:500; line-height:1.5; }
+  .deadline-notice strong { color:var(--magenta); font-weight:700; }
+
+  .rgpd-footer { text-align:center; font-size:11px; color:var(--gray); margin-top:24px; line-height:1.6; opacity:0.8; padding:0 8px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-icon">🤝</div>
+    <h1 class="hero-title">Bilan <em>Enfance</em> 2026</h1>
+    <p class="hero-sub">Votre vécu, votre regard, vos envies. Ce questionnaire alimente le premier baromètre de l'engagement des organisations pour l'enfance.</p>
+
+    <div class="solikend-badge">
+      <div class="solikend-badge-title"><span>🎁</span>TIRAGE AU SORT — 16 JUIN</div>
+      <div class="solikend-badge-text">
+        Parmi tous les répondants, <strong>1 gagnant</strong> remportera une <strong>carte cadeau Solikend 250€</strong> pour un séjour dans un hôtel partenaire où <strong>l'intégralité du paiement est reversée</strong> à l'association de son choix.
+      </div>
+    </div>
+
+    <div class="anon-badge">🔒 Anonyme · 3 à 5 min</div>
+  </div>
+</div>
+
+<div class="cards-wrap">
+  <div class="cards-title">Sélectionnez votre profil pour accéder à votre questionnaire</div>
+
+  <a class="profile-card" href="bilan-equipe.html" id="cardEquipe">
+    <div class="card-inner">
+      <div class="card-icon">👟</div>
+      <div class="card-body">
+        <div class="card-title">Coureur ou Supporter en équipe</div>
+        <div class="card-desc">J'ai participé avec d'autres membres de mon organisation</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </a>
+
+  <a class="profile-card" href="bilan-solo.html" id="cardSolo">
+    <div class="card-inner">
+      <div class="card-icon">🎽</div>
+      <div class="card-body">
+        <div class="card-title">Coureur solo, Supporter ou Bénévole</div>
+        <div class="card-desc">J'ai participé à titre individuel</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </a>
+
+  <a class="profile-card" href="bilan-donateur.html" id="cardDon">
+    <div class="card-inner">
+      <div class="card-icon">💛</div>
+      <div class="card-body">
+        <div class="card-title">Donateur</div>
+        <div class="card-desc">J'ai soutenu financièrement sans participer physiquement</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </a>
+
+  <div class="deadline-notice">
+    <p>⏰ Date limite de participation : <strong>15 juin 2026 à 23h59</strong><br>
+    Le tirage au sort aura lieu le 16 juin 2026.</p>
+  </div>
+
+  <div class="rgpd-footer">
+    🔒 Réponses totalement anonymes · Aucune donnée nominative transmise<br>
+    Conformément au RGPD — Défi Enfance / Union pour l'Enfance / Esperancia
+  </div>
+</div>
+
+<script>
+  // Redirige vers le bon formulaire en préservant le token dans l'URL
+  const token = new URLSearchParams(window.location.search).get('token');
+
+  // Si pas de token : accès libre à la page d'index (c'est normal)
+  // Les formulaires eux bloquent sans token
+
+  if (token) {
+    // Pré-remplir les liens avec le token
+    ['cardEquipe','cardSolo','cardDon'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        const base = el.getAttribute('href');
+        el.setAttribute('href', base + '?token=' + token);
+      }
+    });
+  }
+</script>
+</body>
+</html>
