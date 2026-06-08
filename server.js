@@ -27,7 +27,7 @@ async function sendBrevoEmail({ to, subject, htmlContent, replyTo }) {
     body: JSON.stringify({
       sender: { name: 'Défi Enfance', email: 'noreply@defienf.fr' },
       to: Array.isArray(to) ? to : [to],
-      replyTo: replyTo || { email: 'contact@defienf.fr' },
+      replyTo: replyTo || { email: 'contact@defienfance.fr' },
       subject,
       htmlContent
     })
@@ -55,7 +55,7 @@ function buildEmailHtml({ prenom, lien, type, dateLimit }) {
     <div style="margin-top:32px;padding-top:20px;border-top:1px solid #f0e8e8;font-family:sans-serif;font-size:11px;color:#999;text-align:center;line-height:1.6">
       🔒 Réponses anonymes · Résultats agrégés uniquement<br>
       Défi Enfance / Union pour l'Enfance / Esperancia<br>
-      <a href="mailto:contact@defienf.fr" style="color:#fb0089">contact@defienf.fr</a>
+      <a href="mailto:contact@defienfance.fr" style="color:#fb0089">contact@defienfance.fr</a>
     </div>`;
 
   const templates = {
@@ -77,7 +77,10 @@ function buildEmailHtml({ prenom, lien, type, dateLimit }) {
             Remplir mon Bilan Enfance →
           </a>
         </div>
-        <p style="font-size:13px;color:#999;text-align:center">Date limite : <strong>${dateLimit}</strong> · Lien personnel non transférable</p>
+        <p style="font-size:13px;color:#999;text-align:center">Date limite : <strong>${dateLimit}</strong> · Ce lien est personnel, il ne peut être utilisé qu'une seule fois.</p>
+        <div style="background:#fff4fb;border-left:3px solid #fb0089;border-radius:8px;padding:12px 16px;margin-top:16px;font-size:12px;color:#666;line-height:1.6">
+          📬 <strong>Vous partagez cette adresse email avec un autre participant ?</strong> Pas de problème — chaque lien est strictement personnel. Si vous recevez plusieurs emails, chaque lien correspond à une personne différente : transmettez-le à la bonne personne ou remplissez le questionnaire avec elle.
+        </div>
         ${footer}
       </div>`,
 
@@ -157,12 +160,14 @@ app.post('/send-email', requireAdmin, async (req, res) => {
     // recipients = [{ email, prenom, lien }]
     const results = [];
     for (const r of recipients) {
+      const prenomNom = [r.prenom, r.nom].filter(Boolean).join(' ');
+      const prefix = prenomNom ? `${prenomNom} — ` : '';
       const subjects = {
-        premier_envoi: 'Activez votre Bilan Enfance — tirage au sort 250€ Solikend 🎁',
-        remerciement: 'Merci pour votre Bilan Enfance ! 🏆',
-        relance1: 'Votre Bilan Enfance vous attend encore',
-        relance2: `Plus que quelques jours — fermeture le ${dateLimit}`,
-        derniere_relance: '⏰ Dernier jour — Bilan Enfance ferme ce soir'
+        premier_envoi: `${prefix}Votre Bilan Enfance — tirage au sort 250€ Solikend 🎁`,
+        remerciement: `${prefix}Merci pour votre Bilan Enfance ! 🏆`,
+        relance1: `${prefix}Votre Bilan Enfance vous attend encore`,
+        relance2: `${prefix}Plus que quelques jours — fermeture le ${dateLimit}`,
+        derniere_relance: `${prefix}⏰ Dernier jour — Bilan Enfance ferme ce soir`
       };
       try {
         await sendBrevoEmail({
