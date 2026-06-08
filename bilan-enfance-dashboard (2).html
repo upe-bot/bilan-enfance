@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Dashboard Bilan Enfance 2026 – Super Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --magenta:#fb0089;--orange-vif:#ef6135;--orange:#ff8533;
+  --bg:#0f0a0f;--surface:#1e1118;--surface2:#2a1a2a;--bg3:#251525;
+  --text:#f0e8f0;--text2:#c0a8c0;--gray:#9b8a9b;--gray2:#6a5a6a;
+  --border:rgba(251,0,137,0.15);
+  --success:#00d084;--warning:#ffb020;--info:#4da6ff;--danger:#ff6b6b;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;}
+
+/* LOGIN */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 20% 50%,rgba(251,0,137,0.12) 0%,transparent 60%),var(--bg);}
+.login-box{background:var(--surface);border:1.5px solid var(--border);border-radius:24px;padding:36px 28px;width:360px;max-width:92vw;box-shadow:0 24px 80px rgba(0,0,0,0.5);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo-icon{font-size:44px;display:block;margin-bottom:8px;}
+.login-logo-text{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;color:var(--magenta);}
+.login-logo-sub{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.login-input{width:100%;padding:13px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:12px;-webkit-appearance:none;}
+.login-input:focus{border-color:var(--magenta);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--magenta),var(--orange-vif));border:none;border-radius:13px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;min-height:48px;-webkit-appearance:none;}
+.login-err{color:#ff6b6b;font-size:12px;text-align:center;margin-top:8px;display:none;}
+.login-err.show{display:block;}
+
+/* MAIN */
+.main{display:none;}
+.main.active{display:block;}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:50;}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-logo{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:900;color:var(--magenta);}
+.topbar-badge{background:rgba(251,0,137,0.15);border:1px solid rgba(251,0,137,0.3);color:var(--magenta);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:20px;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.btn-sm{padding:7px 12px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--gray);min-height:36px;-webkit-appearance:none;}
+.btn-sm:active{opacity:0.7;}
+.btn-sm.danger{border-color:rgba(255,107,107,0.3);color:var(--danger);}
+.btn-sm.primary{background:linear-gradient(135deg,var(--magenta),var(--orange-vif));border:none;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;}
+
+/* FILTERS */
+.filters-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filter-select{padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;font-family:'Poppins',sans-serif;font-size:11px;color:var(--text);cursor:pointer;outline:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239b8a9b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;}
+.result-count{font-size:11px;color:var(--gray);margin-left:auto;}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tab{padding:12px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
+.tab.active{color:var(--magenta);border-bottom-color:var(--magenta);}
+
+/* CONTENT */
+.tab-content{display:none;padding:16px;}
+.tab-content.active{display:block;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+@media(min-width:600px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;overflow:hidden;}
+.kpi-icon{font-size:18px;margin-bottom:6px;}
+.kpi-value{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;color:var(--text);line-height:1;}
+.kpi-value small{font-size:13px;font-weight:700;color:var(--magenta);}
+.kpi-label{font-size:10px;color:var(--gray);margin-top:4px;}
+
+/* CHART CARDS */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.chart-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px;}
+
+/* BAR CHART */
+.bar-chart{display:flex;flex-direction:column;gap:8px;}
+.bar-row{display:flex;align-items:center;gap:8px;}
+.bar-key{font-size:11px;color:var(--text2);width:160px;flex-shrink:0;line-height:1.3;}
+@media(max-width:480px){.bar-key{width:120px;font-size:10px;}}
+.bar-track{flex:1;background:var(--bg3);border-radius:4px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--magenta),var(--orange-vif));transition:width 0.8s ease;}
+.bar-fill.orange{background:linear-gradient(90deg,var(--orange),var(--orange-vif));}
+.bar-fill.green{background:linear-gradient(90deg,var(--success),#00b870);}
+.bar-fill.info{background:linear-gradient(90deg,var(--info),#7bc8ff);}
+.bar-pct{font-size:10px;font-weight:700;color:var(--magenta);min-width:32px;text-align:right;}
+
+/* NPS */
+.nps-big{text-align:center;padding:16px 0;}
+.nps-score{font-family:'Montserrat',sans-serif;font-size:52px;font-weight:900;color:var(--success);line-height:1;}
+.nps-label{font-size:11px;color:var(--gray);margin-top:4px;}
+.nps-segments{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;}
+.nps-seg{padding:8px;border-radius:10px;text-align:center;}
+.nps-seg.detract{background:rgba(255,107,107,0.1);}
+.nps-seg.passive{background:rgba(255,176,32,0.1);}
+.nps-seg.promo{background:rgba(0,208,132,0.1);}
+.nps-seg-pct{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:900;}
+.nps-seg-label{font-size:9px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* DONUT SVG */
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.donut-legend{flex:1;min-width:120px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:6px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-label{color:var(--text2);flex:1;}
+.legend-pct{font-weight:700;color:var(--text);}
+
+/* VERBATIMS */
+.verbatim-list{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;}
+.verbatim-item{background:var(--bg3);border-radius:10px;padding:10px 12px;border-left:3px solid var(--magenta);font-size:12px;color:var(--text2);line-height:1.5;font-style:italic;}
+.verbatim-meta{font-size:10px;color:var(--gray2);margin-top:4px;font-style:normal;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{background:var(--bg3);padding:8px 10px;text-align:left;font-weight:700;color:var(--gray2);text-transform:uppercase;font-size:9px;letter-spacing:0.8px;white-space:nowrap;}
+td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text2);vertical-align:middle;}
+tr:hover td{background:var(--bg3);}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.badge.green{background:rgba(0,208,132,0.15);color:var(--success);}
+.badge.amber{background:rgba(255,176,32,0.12);color:var(--warning);}
+.badge.red{background:rgba(255,100,100,0.1);color:#ff8888;}
+.badge.blue{background:rgba(77,166,255,0.12);color:var(--info);}
+
+/* EMAIL PANEL */
+.email-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.email-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+@media(min-width:600px){.email-type-grid{grid-template-columns:repeat(4,1fr);}}
+.email-type-btn{padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg3);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.15s;min-height:44px;-webkit-appearance:none;}
+.email-type-btn.selected{border-color:var(--magenta);background:rgba(251,0,137,0.1);color:var(--magenta);}
+.email-type-btn:active{opacity:0.7;}
+.progress-wrap{background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;margin:8px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--magenta),var(--orange-vif));transition:width 0.4s ease;}
+.send-log{max-height:160px;overflow-y:auto;font-size:11px;color:var(--gray);line-height:1.8;background:var(--bg3);border-radius:10px;padding:10px 12px;margin-top:8px;}
+
+/* ABANDON TABLE */
+.abandon-tag{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;background:rgba(255,176,32,0.12);color:var(--warning);}
+
+/* SECTION DIVIDER */
+.section-head{display:flex;align-items:center;gap:8px;margin:16px 0 10px;}
+.section-head-line{flex:1;height:1px;background:var(--border);}
+.section-head-label{font-size:10px;font-weight:700;color:var(--gray2);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+
+/* STATUS */
+.status-msg{padding:10px 14px;border-radius:10px;font-size:12px;font-weight:500;margin-top:8px;display:none;}
+.status-msg.success{background:rgba(0,208,132,0.1);border:1px solid rgba(0,208,132,0.25);color:var(--success);display:block;}
+.status-msg.error{background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.2);color:#ff8888;display:block;}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;}
+.loading-overlay.active{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--bg3);border-top-color:var(--magenta);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:150;padding:16px;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:24px;max-width:400px;width:100%;}
+.modal-title{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:20px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:12px;border-radius:11px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;cursor:pointer;min-height:44px;border:none;-webkit-appearance:none;}
+.modal-cancel{background:var(--bg3);color:var(--gray);}
+.modal-confirm{background:var(--danger);color:#fff;}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+<!-- MODAL CONFIRMATION -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Confirmer</div>
+    <div class="modal-text" id="modalText">Êtes-vous sûr ?</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Annuler</button>
+      <button class="modal-confirm" id="modalConfirm">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="login-logo-icon">📊</span>
+      <div class="login-logo-text">Bilan Enfance 2026</div>
+      <div class="login-logo-sub">Dashboard Super Admin</div>
+    </div>
+    <input class="login-input" type="password" id="pwdInput" placeholder="Mot de passe administrateur" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button class="login-btn" id="loginBtn">Accéder →</button>
+    <div class="login-err" id="loginErr">Mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainDash">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span style="font-size:18px">🏆</span>
+      <span class="topbar-logo">Bilan Enfance</span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-sm" onclick="loadData()">↻ Sync</button>
+      <button class="btn-sm danger" onclick="confirmClearTests()">🗑 Tests</button>
+      <button class="btn-sm" onclick="logout()">Déco</button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <select class="filter-select" id="filterEdition" onchange="applyFilters()">
+      <option value="all">Toutes éditions</option>
+      <option value="Angers2026">Angers 2026</option>
+      <option value="Joue2026">Joué-lès-Tours 2026</option>
+    </select>
+    <select class="filter-select" id="filterFormulaire" onchange="applyFilters()">
+      <option value="all">Tous profils</option>
+      <option value="equipe">Équipes</option>
+      <option value="solo">Solo / Bénévoles</option>
+      <option value="donateur">Donateurs</option>
+    </select>
+    <select class="filter-select" id="filterOrg" onchange="applyFilters()">
+      <option value="all">Toutes équipes</option>
+    </select>
+    <span class="result-count" id="resultCount">—</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('vue-globale',this)">Vue globale</div>
+    <div class="tab" onclick="showTab('par-equipe',this)">Par équipe</div>
+    <div class="tab" onclick="showTab('verbatims',this)">Verbatims</div>
+    <div class="tab" onclick="showTab('abandons',this)">Abandons</div>
+    <div class="tab" onclick="showTab('emails',this)">Emails</div>
+    <div class="tab" onclick="showTab('export',this)">Export</div>
+  </div>
+
+  <!-- TAB: VUE GLOBALE -->
+  <div class="tab-content active" id="tab-vue-globale">
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card"><div class="kpi-icon">📋</div><div class="kpi-value" id="kpi_total">—</div><div class="kpi-label">Réponses totales</div></div>
+      <div class="kpi-card"><div class="kpi-icon">⭐</div><div class="kpi-value" id="kpi_vecu">—<small>/5</small></div><div class="kpi-label">Vécu moyen</div></div>
+      <div class="kpi-card"><div class="kpi-icon">📈</div><div class="kpi-value" id="kpi_sensib">—<small>%</small></div><div class="kpi-label">Sensibilité accrue</div></div>
+      <div class="kpi-card"><div class="kpi-icon">💬</div><div class="kpi-value" id="kpi_nps">—</div><div class="kpi-label">NPS score</div></div>
+    </div>
+
+    <!-- NPS + Profils -->
+    <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px" id="row1">
+      <div class="chart-card">
+        <div class="chart-title">Score NPS</div>
+        <div class="nps-big">
+          <div class="nps-score" id="npsScore">—</div>
+          <div class="nps-label">Net Promoter Score</div>
+        </div>
+        <div class="nps-segments" id="npsSegments"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Répartition des profils</div>
+        <div id="chartProfils"></div>
+      </div>
+    </div>
+
+    <!-- Impact + Desiderata -->
+    <div class="section-head"><div class="section-head-label">Impact & desiderata</div><div class="section-head-line"></div></div>
+    <div class="chart-card">
+      <div class="chart-title">Ce que l'événement a permis</div>
+      <div id="chartImpact"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Souhait de participer à la prochaine édition</div>
+      <div id="chartEditionSuivante"></div>
+    </div>
+
+    <!-- Org -->
+    <div class="section-head"><div class="section-head-label">Engagement organisationnel</div><div class="section-head-line"></div></div>
+    <div class="chart-card">
+      <div class="chart-title">Ce que l'organisation fait bien</div>
+      <div id="chartOrgBien"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Alignement & pratiques</div>
+      <div id="chartOrgContre"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Actions à déployer</div>
+      <div id="chartOrgDeploy"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Motivation au travail si plus d'engagement enfance</div>
+      <div id="chartMotivation"></div>
+    </div>
+  </div>
+
+  <!-- TAB: PAR ÉQUIPE -->
+  <div class="tab-content" id="tab-par-equipe">
+    <div class="chart-card" style="margin-bottom:12px">
+      <div class="chart-title">Équipes avec ≥ 4 réponses</div>
+      <div class="table-wrap" id="tableEquipes"></div>
+    </div>
+    <div id="equipeDetail"></div>
+  </div>
+
+  <!-- TAB: VERBATIMS -->
+  <div class="tab-content" id="tab-verbatims">
+    <div class="chart-card">
+      <div class="chart-title">Messages libres des participants</div>
+      <div class="verbatim-list" id="verbatimsList"></div>
+    </div>
+    <div class="chart-card" style="margin-top:12px">
+      <div class="chart-title">Contacts potentiels signalés</div>
+      <div class="verbatim-list" id="contactsList"></div>
+    </div>
+  </div>
+
+  <!-- TAB: ABANDONS -->
+  <div class="tab-content" id="tab-abandons">
+    <div class="chart-card">
+      <div class="chart-title">Participants arrêtés en cours de questionnaire</div>
+      <p style="font-size:11px;color:var(--gray);margin-bottom:12px">Ces personnes ont ouvert le lien mais n'ont pas soumis le formulaire. Leur dernière étape est trackée.</p>
+      <div class="table-wrap" id="tableAbandons"></div>
+    </div>
+  </div>
+
+  <!-- TAB: EMAILS -->
+  <div class="tab-content" id="tab-emails">
+    <div class="email-panel">
+      <div class="chart-title">Envoyer un email</div>
+      <p style="font-size:11px;color:var(--gray);margin-bottom:12px">Les destinataires sont filtrés automatiquement selon le type d'envoi.</p>
+
+      <div class="email-type-grid">
+        <button class="email-type-btn selected" data-type="premier_envoi" onclick="selectEmailType(this)">📨 1er envoi</button>
+        <button class="email-type-btn" data-type="remerciement" onclick="selectEmailType(this)">🙏 Remerciement</button>
+        <button class="email-type-btn" data-type="relance1" onclick="selectEmailType(this)">🔔 Relance 1</button>
+        <button class="email-type-btn" data-type="relance2" onclick="selectEmailType(this)">⏰ Relance 2</button>
+        <button class="email-type-btn" data-type="derniere_relance" onclick="selectEmailType(this)">🚨 Dernière relance</button>
+      </div>
+
+      <!-- COMPTEUR DESTINATAIRES -->
+      <div id="emailTargetInfo" style="font-size:13px;font-weight:600;color:var(--text);margin:10px 0;padding:12px 16px;background:var(--bg3);border-radius:10px;border-left:3px solid var(--magenta);"></div>
+
+      <!-- EMAIL DE TEST -->
+      <div style="background:rgba(255,176,32,0.08);border:1px solid rgba(255,176,32,0.25);border-radius:12px;padding:14px 16px;margin:10px 0;">
+        <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:10px">🧪 TEST — Envoyer à 2 adresses avant l'envoi global</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input type="email" id="testEmail1" placeholder="test1@exemple.fr" style="flex:1;min-width:160px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;font-family:'Poppins',sans-serif;font-size:12px;color:var(--text);outline:none;">
+          <input type="email" id="testEmail2" placeholder="test2@exemple.fr (optionnel)" style="flex:1;min-width:160px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;font-family:'Poppins',sans-serif;font-size:12px;color:var(--text);outline:none;">
+          <button class="btn-sm" onclick="sendTestEmails()" style="background:rgba(255,176,32,0.15);border-color:rgba(255,176,32,0.3);color:var(--warning);font-weight:700;white-space:nowrap">Envoyer le test</button>
+        </div>
+        <div class="status-msg" id="testEmailStatus" style="margin-top:8px"></div>
+      </div>
+
+      <!-- ENVOI GLOBAL -->
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px">
+        <button class="btn-sm primary" onclick="confirmSendEmails()" style="min-width:160px;padding:12px 20px;font-size:13px">Envoyer à tous →</button>
+        <span style="font-size:11px;color:var(--gray)">Via Brevo · noreply@defienf.fr</span>
+      </div>
+
+      <div class="progress-wrap" id="emailProgress" style="display:none;margin-top:10px">
+        <div class="progress-fill" id="emailProgressFill" style="width:0%"></div>
+      </div>
+      <div class="send-log" id="sendLog" style="display:none"></div>
+      <div class="status-msg" id="emailStatus"></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Statut des envois</div>
+      <div class="table-wrap" id="tableEmailStatus"></div>
+    </div>
+  </div>
+
+  <!-- TAB: EXPORT -->
+  <div class="tab-content" id="tab-export">
+    <div class="chart-card">
+      <div class="chart-title">Exports</div>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.6">Exportez les données filtrées selon la sélection active (édition, profil, équipe). Les tests sont exclus par défaut.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn-sm primary" onclick="exportCSV(false)" style="padding:12px 20px;font-size:13px">⬇ Export CSV — Réponses (sans tests)</button>
+        <button class="btn-sm primary" onclick="exportCSV(true)" style="padding:12px 20px;font-size:13px">⬇ Export CSV — Toutes réponses (avec tests)</button>
+        <button class="btn-sm primary" onclick="exportTokensCSV()" style="padding:12px 20px;font-size:13px">⬇ Export CSV — Tokens (statut réponses)</button>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:12px">
+      <div class="chart-title">Statistiques de participation</div>
+      <div id="statsParticipation"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyCwOARNrMZ2Uoi48oRxEaEqMm4oKYfNxAY",
+  authDomain:"bilan-post-defi-enfance-2026.firebaseapp.com",
+  projectId:"bilan-post-defi-enfance-2026",
+  storageBucket:"bilan-post-defi-enfance-2026.firebasestorage.app",
+  messagingSenderId:"16663937815",
+  appId:"1:16663937815:web:a05b9a8a7b1952b51e2d52"
+});
+const db = getFirestore(app);
+window._db = db;
+window._fs = { collection, getDocs, query, where, doc, deleteDoc, writeBatch };
+</script>
+
+<script>
+const API = 'https://bilan-enfance-api.onrender.com';
+// ── PAS DE MOT DE PASSE DANS LE HTML ──
+// L'authentification se fait entièrement via le serveur Render
+// Le mot de passe ne vit que dans les variables d'environnement Render (ADMIN_PWD)
+
+let allResponses = [];
+let allTokens = [];
+let filteredData = [];
+let selectedEmailType = 'premier_envoi';
+
+// ── AUTH — session persistante 24h via localStorage ──
+const SESSION_KEY = 'bilan_admin_session';
+const SESSION_TTL = 24 * 60 * 60 * 1000; // 24 heures
+
+function saveSession(pwd) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    pwd, expires: Date.now() + SESSION_TTL
+  }));
+}
+
+function loadSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (s && s.expires > Date.now()) return s.pwd;
+    localStorage.removeItem(SESSION_KEY);
+  } catch(e) {}
+  return null;
+}
+
+function openDashboard(pwd) {
+  window._adminPwd = pwd;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainDash').classList.add('active');
+  loadData();
+}
+
+async function tryLogin() {
+  const pwd = document.getElementById('pwdInput').value;
+  if (!pwd) return;
+
+  const btn = document.getElementById('loginBtn');
+  btn.textContent = 'Vérification…';
+  btn.disabled = true;
+
+  // Timeout de 8 secondes sur Render
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
+  try {
+    const res = await fetch(`${API}/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+
+    if (data.ok) {
+      saveSession(pwd);
+      openDashboard(pwd);
+    } else {
+      document.getElementById('loginErr').textContent = 'Mot de passe incorrect.';
+      document.getElementById('loginErr').classList.add('show');
+      btn.textContent = 'Accéder →';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    clearTimeout(timeout);
+    // Render en veille ou inaccessible — fallback session locale
+    const saved = loadSession();
+    if (saved && saved === pwd) {
+      // Session encore valide — on laisse entrer
+      openDashboard(pwd);
+    } else {
+      document.getElementById('loginErr').textContent = 'Serveur en démarrage (30-60 sec) ou mot de passe incorrect. Réessayez.';
+      document.getElementById('loginErr').classList.add('show');
+      btn.textContent = 'Accéder →';
+      btn.disabled = false;
+    }
+  }
+}
+window.tryLogin = tryLogin;
+
+// ── AUTO-LOGIN si session valide ──
+(function checkAutoLogin() {
+  const saved = loadSession();
+  if (saved) {
+    window._adminPwd = saved;
+    // Vérifier silencieusement que le mot de passe est toujours valide
+    fetch(`${API}/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: saved })
+    }).then(r => r.json()).then(d => {
+      if (d.ok) openDashboard(saved);
+      else localStorage.removeItem(SESSION_KEY);
+    }).catch(() => {
+      // Render en veille — on ouvre quand même avec la session sauvegardée
+      openDashboard(saved);
+    });
+  }
+})();
+
+function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('mainDash').classList.remove('active');
+  document.getElementById('pwdInput').value = '';
+  window._adminPwd = null;
+}
+window.logout = logout;
+
+// ── TABS ──
+window.showTab = function(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+};
+
+// ── LOAD DATA ──
+async function loadData() {
+  document.getElementById('loadingOverlay').classList.add('active');
+  try {
+    if (window._db) {
+      const [respSnap, tokenSnap] = await Promise.all([
+        window._fs.getDocs(window._fs.collection(window._db, 'bilan_enfance')),
+        window._fs.getDocs(window._fs.collection(window._db, 'bilan_tokens'))
+      ]);
+      allResponses = respSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allTokens = tokenSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Si aucune donnée réelle, afficher un état vide (pas de démo)
+      if (allResponses.length === 0 && allTokens.length === 0) {
+        showEmptyState();
+      }
+    }
+  } catch(e) {
+    console.warn('Erreur Firebase:', e);
+    showEmptyState();
+  }
+  buildOrgFilter();
+  applyFilters();
+  document.getElementById('loadingOverlay').classList.remove('active');
+}
+window.loadData = loadData;
+
+function showEmptyState() {
+  document.getElementById('dashContent') && (
+    document.getElementById('dashContent').innerHTML = ''
+  );
+  // Afficher un message dans la vue globale
+  const kpiGrid = document.getElementById('kpiGrid');
+  if (kpiGrid) {
+    const notice = document.createElement('div');
+    notice.style.cssText = 'background:rgba(251,0,137,0.08);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center;font-size:13px;color:var(--gray);line-height:1.7;';
+    notice.innerHTML = '📭 <strong style="color:var(--text)">Aucune donnée pour l'instant.</strong><br>Les réponses apparaîtront ici dès que les premiers participants auront rempli leur questionnaire.';
+    kpiGrid.parentNode.insertBefore(notice, kpiGrid);
+  }
+}
+
+// ── DEMO DATA ──
+function generateDemoData() {
+  const orgs = ['CMAR','Fidal','BCZ','Nameshield','Solar Bird','Weiss','Esperancia','TGS','IRCOM','Coureurs.'];
+  const data = [];
+  for (let i = 0; i < 62; i++) {
+    const org = orgs[Math.floor(Math.random() * orgs.length)];
+    const f = ['equipe','equipe','equipe','solo','donateur'][Math.floor(Math.random()*5)];
+    data.push({
+      id:'demo_'+i, formulaire:f, is_test:false,
+      edition:['Angers2026','Joue2026'][Math.floor(Math.random()*2)],
+      organisation: f==='equipe' ? org : '',
+      vecu_global: String(Math.ceil(Math.random()*5)),
+      impact_perso:['comprendre_enjeux','fierte','motiver_action'].slice(0,Math.ceil(Math.random()*3)),
+      sensib_avant:['peu','moyen','engage','tres_engage'][Math.floor(Math.random()*4)],
+      prochaine_edition:['oui_certain','oui_probable','pas_sur'][Math.floor(Math.random()*3)],
+      org_bien:['dons_assos','benevolat','politique_sociale'].slice(0,Math.ceil(Math.random()*3)),
+      org_contre:['gap_rse','soutien_parents','raisonnablement_aligne'].slice(0,Math.ceil(Math.random()*2)),
+      org_deploy:['mecenat','journees_benevolat','formation'].slice(0,Math.ceil(Math.random()*2)),
+      motivation_enfance:['oui_clairement','probablement','pas_vraiment'][Math.floor(Math.random()*3)],
+      nps:String([6,7,8,8,9,10][Math.floor(Math.random()*6)]),
+      message_libre:Math.random()>0.6?['Super événement !','Très mobilisateur','Plus de contact avec les assos svp','Bravo à toute l\'équipe !'][Math.floor(Math.random()*4)]:'',
+      contacts_potentiels:Math.random()>0.7?'Entreprise X — très engagée RSE':'',
+      timestamp:new Date(Date.now()-Math.random()*5*86400000).toISOString()
+    });
+  }
+  return data;
+}
+function generateDemoTokens() {
+  const names = [['Marie','Dupont'],['Jean','Martin'],['Sophie','Bernard'],['Lucas','Robert'],['Emma','Petit']];
+  return names.map((n,i) => ({
+    id:'token_'+i, prenom:n[0], nom:n[1], email:`${n[0].toLowerCase()}@exemple.fr`,
+    organisation:'CMAR', edition:'Angers2026',
+    used: i < 3, last_step: i===3 ? 1 : i===4 ? 2 : null,
+    last_seen: i>=3 ? new Date(Date.now()-86400000).toISOString() : null,
+    submitted_at: i<3 ? new Date().toISOString() : null,
+    lien_bilan:'https://upe-bot.github.io/bilan-defi-enfance-2026/bilan-equipe.html?token=token_'+i
+  }));
+}
+
+// ── FILTERS ──
+function buildOrgFilter() {
+  const orgs = [...new Set(allResponses.filter(d=>d.organisation).map(d=>d.organisation))].sort();
+  const sel = document.getElementById('filterOrg');
+  sel.innerHTML = '<option value="all">Toutes équipes</option>';
+  orgs.forEach(o => sel.innerHTML += `<option value="${o}">${o}</option>`);
+}
+
+window.applyFilters = function() {
+  const ed = document.getElementById('filterEdition').value;
+  const fo = document.getElementById('filterFormulaire').value;
+  const org = document.getElementById('filterOrg').value;
+  filteredData = allResponses.filter(d =>
+    !d.is_test &&
+    (ed === 'all' || d.edition === ed) &&
+    (fo === 'all' || d.formulaire === fo) &&
+    (org === 'all' || d.organisation === org)
+  );
+  document.getElementById('resultCount').textContent = filteredData.length + ' réponse' + (filteredData.length > 1 ? 's' : '');
+  renderAll();
+};
+
+// ── RENDER ALL ──
+function renderAll() {
+  renderKPIs();
+  renderCharts();
+  renderEquipes();
+  renderVerbatims();
+  renderAbandons();
+  renderEmailStatus();
+  renderStatsParticipation();
+  updateEmailTargetInfo();
+}
+
+// ── KPIs ──
+function renderKPIs() {
+  const n = filteredData.length;
+  const vecuVals = filteredData.map(d=>parseInt(d.vecu_global)).filter(v=>!isNaN(v));
+  const avgVecu = vecuVals.length ? (vecuVals.reduce((a,b)=>a+b,0)/vecuVals.length).toFixed(1) : '—';
+  const sensibEvo = filteredData.filter(d=>d.sensib_apres==='plus_positive').length;
+  const sensiPct = n ? Math.round(sensibEvo/n*100) : 0;
+  const npsVals = filteredData.map(d=>parseInt(d.nps)).filter(v=>!isNaN(v));
+  const promoters = npsVals.filter(v=>v>=9).length;
+  const detractors = npsVals.filter(v=>v<=6).length;
+  const nps = npsVals.length ? Math.round((promoters-detractors)/npsVals.length*100) : '—';
+
+  document.getElementById('kpi_total').innerHTML = n + '<small> rép.</small>';
+  document.getElementById('kpi_vecu').innerHTML = avgVecu + '<small>/5</small>';
+  document.getElementById('kpi_sensib').innerHTML = sensiPct + '<small>%</small>';
+  document.getElementById('kpi_nps').innerHTML = nps + '<small> NPS</small>';
+
+  // NPS detail
+  const promoterPct = npsVals.length ? Math.round(promoters/npsVals.length*100) : 0;
+  const passivePct = npsVals.length ? Math.round(npsVals.filter(v=>v>=7&&v<=8).length/npsVals.length*100) : 0;
+  const detractorPct = npsVals.length ? Math.round(detractors/npsVals.length*100) : 0;
+  document.getElementById('npsScore').textContent = typeof nps === 'number' ? nps : '—';
+  document.getElementById('npsSegments').innerHTML = `
+    <div class="nps-seg detract"><div class="nps-seg-pct" style="color:#ff8888">${detractorPct}%</div><div class="nps-seg-label">Détracteurs 0–6</div></div>
+    <div class="nps-seg passive"><div class="nps-seg-pct" style="color:var(--warning)">${passivePct}%</div><div class="nps-seg-label">Passifs 7–8</div></div>
+    <div class="nps-seg promo"><div class="nps-seg-pct" style="color:var(--success)">${promoterPct}%</div><div class="nps-seg-label">Promoteurs 9–10</div></div>`;
+}
+
+// ── CHARTS ──
+function countVals(data, key) {
+  const map = {};
+  data.forEach(d => {
+    const vals = Array.isArray(d[key]) ? d[key] : (d[key] ? [d[key]] : []);
+    vals.forEach(v => { if(v) map[v] = (map[v]||0)+1; });
+  });
+  return map;
+}
+
+function barChart(map, labels, cls='') {
+  const n = filteredData.length || 1;
+  const sorted = Object.entries(map).filter(([k])=>labels[k]).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (!sorted.length) return '<p style="font-size:11px;color:var(--gray);padding:8px 0">Pas de données</p>';
+  return `<div class="bar-chart">${sorted.map(([k,v]) => `
+    <div class="bar-row">
+      <div class="bar-key">${labels[k]}</div>
+      <div class="bar-track"><div class="bar-fill ${cls}" style="width:${Math.round(v/n*100)}%"></div></div>
+      <div class="bar-pct">${Math.round(v/n*100)}%</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderCharts() {
+  const profilLabels = {coureur_equipe:'Coureur équipe',supporter_equipe:'Supporter équipe',coureur_solo:'Solo',supporter_solo:'Supporter solo',benevole:'Bénévole',donateur:'Donateur'};
+  const impactLabels = {comprendre_enjeux:'Comprendre les enjeux',decouvrir_assos:'Découvrir assos',sentiment_utile:'Se sentir acteur',fierte:'Fierté collective',motiver_action:'Envie d\'aller plus loin',aucun:'Aucun impact'};
+  const editionLabels = {oui_certain:'Oui, certain',oui_probable:'Probablement',pas_sur:'Pas sûr',non:'Non'};
+  const bienLabels = {dons_assos:'Soutien financier assos',benevolat:'Bénévolat encouragé',politique_sociale:'Politique sociale forte',partenariats:'Partenariats durables',impact_metier:'Impact métier positif',rien_notable:'Rien de notable'};
+  const contraLabels = {gap_rse:'Écart discours/réalité',soutien_parents:'Soutien parents insuffisant',raisonnablement_aligne:'Raisonnablement aligné',tres_aligne:'Très bien aligné'};
+  const deployLabels = {mecenat:'Mécénat structuré',journees_benevolat:'Journées bénévolat',accueil_asso:'Accueil associations',stage_jeunes:'Stages jeunes',formation:'Formation protection enfance',parentalite:'Politique parentalité'};
+  const motivLabels = {oui_clairement:'Oui, clairement',probablement:'Probablement',pas_vraiment:'Pas vraiment',non:'Non'};
+
+  document.getElementById('chartProfils').innerHTML = barChart(countVals(filteredData,'profil'), profilLabels, 'info');
+  document.getElementById('chartImpact').innerHTML = barChart(countVals(filteredData,'impact_perso'), impactLabels);
+  document.getElementById('chartEditionSuivante').innerHTML = barChart(countVals(filteredData,'prochaine_edition'), editionLabels, 'green');
+  document.getElementById('chartOrgBien').innerHTML = barChart(countVals(filteredData,'org_bien'), bienLabels, 'green');
+  document.getElementById('chartOrgContre').innerHTML = barChart(countVals(filteredData,'org_contre'), contraLabels, 'orange');
+  document.getElementById('chartOrgDeploy').innerHTML = barChart(countVals(filteredData,'org_deploy'), deployLabels);
+  document.getElementById('chartMotivation').innerHTML = barChart(countVals(filteredData,'motivation_enfance'), motivLabels, 'orange');
+}
+
+// ── ÉQUIPES ──
+function renderEquipes() {
+  const orgMap = {};
+  filteredData.filter(d=>d.organisation).forEach(d=>{
+    if (!orgMap[d.organisation]) orgMap[d.organisation]={n:0,vecu:[],nps:[],sensibEvo:0,prochaine:{}};
+    const o=orgMap[d.organisation];
+    o.n++;
+    if(d.vecu_global) o.vecu.push(parseInt(d.vecu_global));
+    if(d.nps) o.nps.push(parseInt(d.nps));
+    if(d.sensib_apres==='plus_positive') o.sensibEvo++;
+    if(d.prochaine_edition) o.prochaine[d.prochaine_edition]=(o.prochaine[d.prochaine_edition]||0)+1;
+  });
+
+  const bigOrgs = Object.entries(orgMap).filter(([_,v])=>v.n>=4).sort((a,b)=>b[1].n-a[1].n);
+
+  if (!bigOrgs.length) {
+    document.getElementById('tableEquipes').innerHTML = '<p style="padding:16px;font-size:12px;color:var(--gray)">Aucune équipe avec ≥ 4 réponses dans ce filtre.</p>';
+    return;
+  }
+
+  const rows = bigOrgs.map(([org,v]) => {
+    const avgVecu = v.vecu.length ? (v.vecu.reduce((a,b)=>a+b,0)/v.vecu.length).toFixed(1) : '—';
+    const avgNps = v.nps.length ? (v.nps.reduce((a,b)=>a+b,0)/v.nps.length).toFixed(1) : '—';
+    const sensiPct = Math.round(v.sensibEvo/v.n*100);
+    // Taux participation estimé vs tokens
+    const orgTokens = allTokens.filter(t=>t.organisation===org);
+    const totalInscrit = orgTokens.length || v.n;
+    const rate = Math.min(100, Math.round(v.n/totalInscrit*100));
+    const rateCls = rate>=70?'green':rate>=50?'amber':'red';
+    const bonus = '';
+    return `<tr>
+      <td style="font-weight:600;color:var(--text);white-space:nowrap">${org}</td>
+      <td style="color:var(--gray)">${v.n}</td>
+      <td><span class="badge ${rateCls}">${rate}%</span> </td>
+      <td style="font-weight:700;color:var(--orange)">${avgVecu}/5</td>
+      <td style="font-weight:700;color:var(--info)">${avgNps}/10</td>
+      <td style="font-weight:700;color:var(--success)">${sensiPct}%</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tableEquipes').innerHTML = `
+    <table>
+      <thead><tr><th>Équipe</th><th>Rép.</th><th>Taux part.</th><th>Vécu moy.</th><th>NPS moy.</th><th>Sensib. accrue</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── VERBATIMS ──
+function renderVerbatims() {
+  const verbatims = filteredData.filter(d=>d.message_libre||d.vecu_libre).slice(0,20);
+  const contacts = filteredData.filter(d=>d.contacts_potentiels).slice(0,20);
+
+  document.getElementById('verbatimsList').innerHTML = verbatims.length
+    ? verbatims.map(d=>`<div class="verbatim-item">"${d.message_libre||d.vecu_libre}"<div class="verbatim-meta">${d.edition||'?'} · ${(d.formulaire||'').replace(/_/g,' ')} ${d.organisation?'· '+d.organisation:''}</div></div>`).join('')
+    : '<p style="font-size:12px;color:var(--gray);padding:8px">Aucun verbatim</p>';
+
+  document.getElementById('contactsList').innerHTML = contacts.length
+    ? contacts.map(d=>`<div class="verbatim-item">"${d.contacts_potentiels}"<div class="verbatim-meta">${d.edition||'?'} ${d.organisation?'· '+d.organisation:''}</div></div>`).join('')
+    : '<p style="font-size:12px;color:var(--gray);padding:8px">Aucun contact signalé</p>';
+}
+
+// ── ABANDONS ──
+function renderAbandons() {
+  const abandons = allTokens.filter(t => !t.used && t.last_step != null && t.last_step > 0);
+  const stepLabels = {0:'Identification',1:'Section 1',2:'Section 2',3:'Section 3',99:'Soumis'};
+
+  if (!abandons.length) {
+    document.getElementById('tableAbandons').innerHTML = '<p style="padding:16px;font-size:12px;color:var(--gray)">Aucun abandon tracké pour l\'instant.</p>';
+    return;
+  }
+
+  const rows = abandons.map(t => `<tr>
+    <td style="color:var(--text);white-space:nowrap">${t.prenom||'—'} ${t.nom||''}</td>
+    <td style="color:var(--info)">${t.email||'—'}</td>
+    <td>${t.telephone ? `<a href="tel:${t.telephone}" style="color:var(--success);font-weight:600;text-decoration:none">${t.telephone}</a>` : '—'}</td>
+    <td>${t.organisation||'—'}</td>
+    <td><span class="abandon-tag">Étape ${t.last_step}: ${stepLabels[t.last_step]||t.last_step}</span></td>
+    <td style="color:var(--gray);font-size:10px;white-space:nowrap">${t.last_seen ? new Date(t.last_seen).toLocaleDateString('fr') : '—'}</td>
+  </tr>`).join('');
+
+  document.getElementById('tableAbandons').innerHTML = `
+    <table>
+      <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Organisation</th><th>Dernière étape</th><th>Vu le</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── EMAIL STATUS ──
+function renderEmailStatus() {
+  const total = allTokens.length;
+  const responded = allTokens.filter(t=>t.used).length;
+  const notResponded = total - responded;
+  const abandoned = allTokens.filter(t=>!t.used && t.last_step>0).length;
+
+  document.getElementById('tableEmailStatus').innerHTML = `
+    <table>
+      <thead><tr><th>Statut</th><th>Nombre</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--success)">✓ Ont répondu</td><td>${responded}</td><td><span class="badge green">${total?Math.round(responded/total*100):0}%</span></td></tr>
+        <tr><td style="color:var(--warning)">⚡ Abandons (ont ouvert)</td><td>${abandoned}</td><td><span class="badge amber">${total?Math.round(abandoned/total*100):0}%</span></td></tr>
+        <tr><td style="color:var(--gray)">○ N'ont pas ouvert</td><td>${notResponded-abandoned}</td><td><span class="badge red">${total?Math.round((notResponded-abandoned)/total*100):0}%</span></td></tr>
+        <tr style="font-weight:700"><td style="color:var(--text)">Total inscrits</td><td>${total}</td><td>100%</td></tr>
+      </tbody>
+    </table>`;
+}
+
+// ── STATS PARTICIPATION ──
+function renderStatsParticipation() {
+  const angers = allResponses.filter(d=>!d.is_test&&d.edition==='Angers2026').length;
+  const joue = allResponses.filter(d=>!d.is_test&&d.edition==='Joue2026').length;
+  const equipe = allResponses.filter(d=>!d.is_test&&d.formulaire==='equipe').length;
+  const solo = allResponses.filter(d=>!d.is_test&&d.formulaire==='solo').length;
+  const don = allResponses.filter(d=>!d.is_test&&d.formulaire==='donateur').length;
+  const tests = allResponses.filter(d=>d.is_test).length;
+
+  document.getElementById('statsParticipation').innerHTML = `
+    <div class="bar-chart">
+      <div class="bar-row"><div class="bar-key">Angers 2026</div><div class="bar-track"><div class="bar-fill" style="width:${angers+joue?Math.round(angers/(angers+joue)*100):0}%"></div></div><div class="bar-pct">${angers} rép.</div></div>
+      <div class="bar-row"><div class="bar-key">Joué-lès-Tours 2026</div><div class="bar-track"><div class="bar-fill orange" style="width:${angers+joue?Math.round(joue/(angers+joue)*100):0}%"></div></div><div class="bar-pct">${joue} rép.</div></div>
+      <div class="bar-row"><div class="bar-key">Formulaire équipe</div><div class="bar-track"><div class="bar-fill green" style="width:${allResponses.length?Math.round(equipe/allResponses.length*100):0}%"></div></div><div class="bar-pct">${equipe}</div></div>
+      <div class="bar-row"><div class="bar-key">Formulaire solo</div><div class="bar-track"><div class="bar-fill info" style="width:${allResponses.length?Math.round(solo/allResponses.length*100):0}%"></div></div><div class="bar-pct">${solo}</div></div>
+      <div class="bar-row"><div class="bar-key">Formulaire donateur</div><div class="bar-track"><div class="bar-fill" style="width:${allResponses.length?Math.round(don/allResponses.length*100):0}%"></div></div><div class="bar-pct">${don}</div></div>
+      <div class="bar-row"><div class="bar-key" style="color:var(--warning)">Entrées test (exclues)</div><div class="bar-track"><div class="bar-fill orange" style="width:${tests?Math.min(100,tests*10):0}%"></div></div><div class="bar-pct" style="color:var(--warning)">${tests}</div></div>
+    </div>`;
+}
+
+// ── EMAIL TYPE SELECTION ──
+window.selectEmailType = function(btn) {
+  document.querySelectorAll('.email-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedEmailType = btn.dataset.type;
+  updateEmailTargetInfo();
+};
+
+function getTargets(type) {
+  const notResponded = allTokens.filter(t => !t.used);
+  const responded = allTokens.filter(t => t.used);
+  const map = {
+    premier_envoi: allTokens,
+    remerciement: responded,
+    relance1: notResponded,
+    relance2: notResponded,
+    derniere_relance: notResponded
+  };
+  return map[type] || [];
+}
+
+function updateEmailTargetInfo() {
+  const targets = getTargets(selectedEmailType);
+  const total = allTokens.length;
+  const labels = {
+    premier_envoi: 'tous les inscrits',
+    remerciement: 'ceux qui ont répondu',
+    relance1: 'n'ont pas encore répondu',
+    relance2: 'n'ont pas encore répondu',
+    derniere_relance: 'dernière chance'
+  };
+  const el = document.getElementById('emailTargetInfo');
+  if (!el) return;
+  el.innerHTML = `
+    <span style="font-size:22px;font-weight:900;color:var(--magenta)">${targets.length}</span>
+    <span style="font-size:13px;color:var(--gray);font-weight:400"> destinataire${targets.length>1?'s':''} — ${labels[selectedEmailType]||''}</span>
+    <span style="float:right;font-size:11px;color:var(--gray2)">${total} inscrits au total</span>`;
+}
+
+// ── ENVOI TEST ──
+window.sendTestEmails = async function() {
+  const e1 = document.getElementById('testEmail1').value.trim();
+  const e2 = document.getElementById('testEmail2').value.trim();
+  const statusEl = document.getElementById('testEmailStatus');
+
+  if (!e1) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Saisissez au moins une adresse email de test.';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.className = 'status-msg info';
+  statusEl.textContent = 'Envoi en cours…';
+  statusEl.style.display = 'block';
+
+  // Construire 2 destinataires fictifs avec un vrai lien de test
+  const testRecipients = [
+    { email: e1, prenom: 'Test', lien: `https://upe-bot.github.io/bilan-defi-enfance-2026/bilan-equipe.html?token=TEST&prenom=Test` }
+  ];
+  if (e2) testRecipients.push({
+    email: e2, prenom: 'Test2', lien: `https://upe-bot.github.io/bilan-defi-enfance-2026/bilan-solo.html?token=TEST&prenom=Test2`
+  });
+
+  try {
+    const res = await fetch(`${API}/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': window._adminPwd },
+      body: JSON.stringify({ recipients: testRecipients, type: selectedEmailType, dateLimit: '15 juin 23h59' })
+    });
+    const data = await res.json();
+    const sent = data.results?.filter(r => r.status === 'sent').length || 0;
+    statusEl.className = 'status-msg success';
+    statusEl.textContent = `✓ ${sent} email(s) de test envoyé(s) avec succès.`;
+  } catch(e) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Erreur : ' + e.message;
+  }
+  statusEl.style.display = 'block';
+};
+
+// ── SEND EMAILS ──
+window.confirmSendEmails = function() {
+  const targets = getTargets(selectedEmailType);
+  if (!targets.length) { alert('Aucun destinataire pour cet envoi.'); return; }
+  const typeLabels = {premier_envoi:'1er envoi',remerciement:'Remerciement',relance1:'Relance 1',relance2:'Relance 2',derniere_relance:'Dernière relance'};
+  showModal(
+    'Confirmer — ' + (typeLabels[selectedEmailType]||selectedEmailType),
+    'Vous allez envoyer cet email à ' + targets.length + ' destinataire(s) via Brevo.\n\nAvez-vous bien envoyé un test au préalable ?',
+    function() { sendEmails(targets); }
+  );
+};
+
+async function sendEmails(targets) {
+  if (!targets.length) return;
+  document.getElementById('emailProgress').style.display = 'block';
+  document.getElementById('sendLog').style.display = 'block';
+  document.getElementById('sendLog').textContent = '';
+  showEmailStatus('','');
+
+  const BATCH_SIZE = 10;
+  let sent = 0;
+  const log = document.getElementById('sendLog');
+
+  for (let i = 0; i < targets.length; i += BATCH_SIZE) {
+    const chunk = targets.slice(i, i + BATCH_SIZE);
+    const recipients = chunk.map(t => ({
+      email: t.email,
+      prenom: t.prenom || 'Participant',
+      lien: t.lien_bilan || '#'
+    }));
+
+    try {
+      const res = await fetch(`${API}/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'x-admin-password': window._adminPwd },
+        body: JSON.stringify({ recipients, type: selectedEmailType, dateLimit: '15 juin 23h59' })
+      });
+      const data = await res.json();
+      data.results?.forEach(r => {
+        sent++;
+        log.textContent += (r.status === 'sent' ? '✓ ' : '✗ ') + r.email + '\n';
+        log.scrollTop = log.scrollHeight;
+      });
+    } catch(e) {
+      log.textContent += '✗ Erreur batch ' + i + ': ' + e.message + '\n';
+    }
+
+    const pct = Math.round((i + chunk.length) / targets.length * 100);
+    document.getElementById('emailProgressFill').style.width = pct + '%';
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  showEmailStatus('success', `✓ ${sent} email(s) envoyé(s) avec succès.`);
+}
+
+function showEmailStatus(type, msg) {
+  const el = document.getElementById('emailStatus');
+  el.className = 'status-msg' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+// ── CLEAR TESTS ──
+window.confirmClearTests = function() {
+  const testCount = allResponses.filter(d => d.is_test).length;
+  if (!testCount) { alert('Aucune entrée test à supprimer.'); return; }
+  showModal(
+    '🗑 Effacer les tests',
+    `Vous allez supprimer définitivement ${testCount} entrée(s) de test (is_test:true) de Firestore. Cette action est irréversible.`,
+    clearTests
+  );
+};
+
+async function clearTests() {
+  const tests = allResponses.filter(d => d.is_test);
+  if (!tests.length || !window._db) return;
+  document.getElementById('loadingOverlay').classList.add('active');
+  try {
+    const BATCH_SIZE = 400;
+    for (let i = 0; i < tests.length; i += BATCH_SIZE) {
+      const batch = window._fs.writeBatch(window._db);
+      tests.slice(i, i + BATCH_SIZE).forEach(d => {
+        batch.delete(window._fs.doc(window._fs.collection(window._db,'bilan_enfance'), d.id));
+      });
+      await batch.commit();
+    }
+    await loadData();
+  } catch(e) { console.error(e); }
+  document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+// ── EXPORT CSV ──
+window.exportCSV = function(includeTests) {
+  const data = includeTests ? allResponses : allResponses.filter(d => !d.is_test);
+  if (!data.length) return;
+  const keys = ['formulaire','edition','profil','organisation','vecu_global','sensib_avant','prochaine_edition','nps','motivation_enfance','org_bien','org_contre','org_deploy','impact_perso','message_libre','contacts_potentiels','timestamp','is_test'];
+  const rows = [keys.join(';')];
+  data.forEach(d => rows.push(keys.map(k => {
+    const v = d[k];
+    return '"' + (Array.isArray(v) ? v.join('|') : (v||'')).toString().replace(/"/g,'""') + '"';
+  }).join(';')));
+  dlCSV(rows.join('\n'), `bilan-enfance-reponses-${new Date().toISOString().slice(0,10)}.csv`);
+};
+
+window.exportTokensCSV = function() {
+  if (!allTokens.length) return;
+  const keys = ['prenom','nom','email','telephone','organisation','edition','type','used','last_step','submitted_at','lien_bilan'];
+  const rows = [keys.join(';')];
+  allTokens.forEach(t => rows.push(keys.map(k => '"'+(t[k]||'').toString().replace(/"/g,'""')+'"').join(';')));
+  dlCSV(rows.join('\n'), `bilan-enfance-tokens-${new Date().toISOString().slice(0,10)}.csv`);
+};
+
+function dlCSV(content, filename) {
+  const blob = new Blob(['\uFEFF' + content], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+// ── MODAL ──
+let _modalCallback = null;
+function showModal(title, text, cb) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').textContent = text;
+  _modalCallback = cb;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+window.closeModal = function() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  _modalCallback = null;
+};
+document.getElementById('modalConfirm').onclick = function() {
+  closeModal();
+  if (_modalCallback) _modalCallback();
+};
+
+// ── INIT ──
+document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+document.getElementById('loginBtn').addEventListener('click', () => tryLogin());
+document.getElementById('loginErr').textContent = 'Mot de passe incorrect.';
+// Mettre à jour le compteur quand on change d'onglet email
+document.querySelector('[onclick="showTab('emails',this)"]') &&
+  document.querySelector('[onclick="showTab('emails',this)"]').addEventListener('click', () => {
+    setTimeout(updateEmailTargetInfo, 100);
+  });
+</script>
+</body>
+</html>
